@@ -16,7 +16,7 @@ class PolySolverNet:
     #return x.dot(self.l1).relu().dot(self.l2).logsoftmax()
 
   def train_model(self,X,Y):
-    epoch=100
+    epoch=200
     i=0
     opt = optim.SGD([self.l1], lr=0.001)
     opt.zero_grad()
@@ -96,7 +96,41 @@ print(loss.data)
 params=model.l1.data
 print(params)
 
-print(params[0]*xstd)
-print(params[1]*x2std)
-print(params[2]*x3std)
-print(params[3]*x4std)
+train = pd.read_csv('data_train.csv')
+sx=train['x'].iloc[0]
+sx2=sx*sx
+sx3=sx2*sx
+sx4=sx3*sx
+for_scaling=model.forward(Tensor([sx,sx2,sx3,sx4], requires_grad=True))
+print("scale correction")
+print((for_scaling.data/train['y'].iloc[0]))
+scaled_params=params/(for_scaling.data/train['y'].iloc[0])
+print(scaled_params)
+
+test = pd.read_csv('data_test.csv')
+tx=test['x']
+tx2=tx*tx
+tx3=tx*tx*tx
+tx4=tx*tx*tx*tx
+ty=test['y']
+for t in zip(tx,tx2,tx3,tx4,ty):
+  print("input: ", t[0])
+  print("correct: ")
+  print(t[-1])
+  print("predicted: " )
+  print(t[0]*scaled_params[0]+t[1]*scaled_params[1]+t[2]*scaled_params[2]+t[3]*scaled_params[3])
+
+
+
+print("")
+print("Final Coefficients: for x x2 x3 and x4")
+print("for x:")
+print(scaled_params[0])
+print("for x^2:")
+print(scaled_params[1])
+print("for x^3:")
+print(scaled_params[2])
+print("for x^4:")
+print(scaled_params[3])
+
+
