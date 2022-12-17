@@ -7,11 +7,11 @@ class PolySolverNet:
     self.l1 = Tensor.uniform(4,1)
     
   def forward(self, x):
-    print("x")
-    print(x.data)
-    print(self.l1.data)
+    #print("x")
+    #print(x.data)
+    #print(self.l1.data)
     something=x.dot(self.l1)
-    print(something.data)
+    #print(something.data)
     return something
     #return x.dot(self.l1).relu().dot(self.l2).logsoftmax()
 
@@ -32,16 +32,16 @@ class PolySolverNet:
         out = model.forward(x)
 
         #outs= Tensor(out,requires_grad=True)
-        print("error comp")
-        print(y.data)
-        print(out.data)
+        #print("error comp")
+        #print(y.data)
+        #print(out.data)
         loss =((out-y)).abs()#y.sub(out).pow(2).mean()#(out-y).abs()#.mul(out-y).mean()#y.mul(out).mean()
         #print(loss.data)
         opt.zero_grad()        
         loss.backward()
         opt.step()
-        print("current loss:")
-        print(loss.data)
+        #print("current loss:")
+        #print(loss.data)
       i=i+1
 
     return loss
@@ -82,17 +82,17 @@ Y = train['y']
 
 
 X= [list(x) for x in  zip(x,x2,x3,x4)] 
-print("--------------------Y---------------")
-print(Y)
-print("--------------------X---------------")
-print(X)
+#print("--------------------Y---------------")
+#print(Y)
+#print("--------------------X---------------")
+#print(X)
 
 
 
 
 model = PolySolverNet()
 loss= model.train_model(X,Y)
-print(loss.data)
+#print(loss.data)
 params=model.l1.data
 print(params)
 
